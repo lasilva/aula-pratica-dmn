@@ -9,23 +9,32 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import br.com.foodDelivery.tiaLuDelivery.ui.basicComposables.AmountOption
 import br.com.foodDelivery.tiaLuDelivery.ui.basicComposables.FormField
 import br.com.foodDelivery.tiaLuDelivery.ui.basicComposables.MainButton
 import br.com.foodDelivery.tiaLuDelivery.ui.basicComposables.Title
 import br.com.foodDelivery.tiaLuDelivery.ui.basicComposables.UploadButton
+import java.math.BigDecimal
 
 
 @Composable
-fun ProductRegisterForm(modifier: Modifier = Modifier){
+fun ProductRegisterForm(modifier: Modifier = Modifier,
+                        navController: NavController){
 
-    var nome by remember { mutableStateOf("") }
+    var nome = ""
     var preco by remember { mutableStateOf("") }
     var descricao by remember { mutableStateOf("") }
     var codigoPDV by remember { mutableStateOf("") }
     var quantidade by remember { mutableStateOf(0) }
+
+    var isErrorNome by remember { mutableStateOf(false) }
+    var isErrorPreco by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier.padding(start = 30.dp,
@@ -42,8 +51,10 @@ fun ProductRegisterForm(modifier: Modifier = Modifier){
             height = 50.dp,
             modifier = modifier.padding(top = 20.dp),
             leftPadding = 0.dp,
-            value = nome) {
+            value = nome,
+            isError = isErrorNome) {
             novoNome -> nome = novoNome
+            isErrorNome = nome.length < 3
         }
         Row(modifier = modifier.padding(top = 20.dp)) {
             Column (modifier = modifier){
@@ -54,8 +65,19 @@ fun ProductRegisterForm(modifier: Modifier = Modifier){
                     leftPadding = 0.dp,
                     modifier = modifier.padding(bottom = 20.dp),
                     value = preco,
-                    onValueChanged = { novoPreco -> preco = novoPreco}
+                    isError = isErrorPreco,
+                    keyboard = KeyboardType.Decimal,
+                    onValueChanged = { novoPreco ->
+                        preco = novoPreco
+                        val precoUnitario: BigDecimal = if (preco.isNotBlank()) BigDecimal(preco).setScale(2) else BigDecimal.ZERO
+                        isErrorPreco = precoUnitario.compareTo(BigDecimal.ZERO) <= 0
+                    }
                 )
+
+                AmountOption(amount = quantidade, updateAmount = {
+                        novaQuantidade -> quantidade = novaQuantidade
+                })
+
                 AmountOption(amount = quantidade) {
                     novaQuantidade -> quantidade = novaQuantidade
                 }
@@ -89,7 +111,8 @@ fun ProductRegisterForm(modifier: Modifier = Modifier){
             height = 60.dp,
             modifier = modifier.padding(bottom = 20.dp,
                 top = 150.dp)) {
-            println("clicou")
+
+            navController.popBackStack()
         }
     }
 }
@@ -98,7 +121,6 @@ fun ProductRegisterForm(modifier: Modifier = Modifier){
 @Preview(showBackground = true)
 @Composable
 fun ProductRegisterFormPreview(){
-    ProductRegisterForm()
 }
 
 @Preview(showBackground = true)
@@ -121,3 +143,10 @@ fun TitlePreview(){
     Title(title = "Cadastro de Produto")
 }
 
+
+
+
+@Composable
+fun FormFieldCorreto() {
+
+}

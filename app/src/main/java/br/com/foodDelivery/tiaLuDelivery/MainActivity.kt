@@ -34,6 +34,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import br.com.foodDelivery.tiaLuDelivery.navigate.AppRoutes
 import br.com.foodDelivery.tiaLuDelivery.ui.theme.TiaLuDeliveryTheme
 import coil.compose.AsyncImage
 import java.math.BigDecimal
@@ -46,10 +51,25 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TiaLuDeliveryTheme {
-                ProductRegisterForm()
+                NavScreen()
             }
         }
     }
+}
+
+@Composable
+fun NavScreen() {
+
+    val navController = rememberNavController()
+
+    NavHost(navController = navController,
+        startDestination = AppRoutes.HOME.toString()) {
+        composable(route = AppRoutes.HOME.toString()){ PlateItem(navController = navController) }
+        composable(route = AppRoutes.PRODUCT_REGISTER.toString()) { ProductRegisterForm(navController= navController)}
+        // Add more destinations similarly.
+    }
+
+
 }
 
 
@@ -88,7 +108,7 @@ fun SaudacaoUsuario(name: String) {
 @Composable
 fun SaudacaoUsuarioPreview() {
     TiaLuDeliveryTheme {
-        ProductRegisterForm()
+
     }
 }
 
@@ -144,7 +164,8 @@ fun TipoPratoPreview() {
 @Composable
 fun PlateItem(itemName: String = "None",
               itemPrice: BigDecimal = BigDecimal.ZERO,
-              itemId: Int = -1) {
+              itemId: Int = -1,
+              navController: NavController) {
     Box(
         modifier = Modifier
             .size(width = 200.dp, height = 300.dp)
@@ -179,6 +200,7 @@ fun PlateItem(itemName: String = "None",
                 fontFamily = poppins)
 
             Button(onClick = {
+               navController.navigate(AppRoutes.PRODUCT_REGISTER.toString())
                 println("clicou")
             },
                 modifier = Modifier.size(24.dp),
@@ -200,7 +222,6 @@ fun PlateItem(itemName: String = "None",
 @Preview(showBackground = true)
 @Composable
 fun SpecialPlate() {
-    PlateItem(itemName = "Noodles", itemPrice = BigDecimal(7.20))
 }
 
 @Preview(showBackground = true)
