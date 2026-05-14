@@ -10,11 +10,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.intl.Locale
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import br.com.foodDelivery.tiaLuDelivery.ui.basicComposables.AmountOption
 import br.com.foodDelivery.tiaLuDelivery.ui.basicComposables.FormField
 import br.com.foodDelivery.tiaLuDelivery.ui.basicComposables.MainButton
@@ -27,7 +26,7 @@ import java.math.BigDecimal
 fun ProductRegisterForm(modifier: Modifier = Modifier,
                         navController: NavController){
 
-    var nome = ""
+    var nome by remember {mutableStateOf("")}
     var preco by remember { mutableStateOf("") }
     var descricao by remember { mutableStateOf("") }
     var codigoPDV by remember { mutableStateOf("") }
@@ -121,32 +120,5 @@ fun ProductRegisterForm(modifier: Modifier = Modifier,
 @Preview(showBackground = true)
 @Composable
 fun ProductRegisterFormPreview(){
-}
-
-@Preview(showBackground = true)
-@Composable
-fun FormFieldPreview(){
-    FormField(
-        label = "Nome",
-        width = 332.dp,
-        height = 50.dp,
-        leftPadding = 30.dp,
-        value = "",
-        onValueChanged = {novoValor -> println(novoValor)}
-    )
-}
-
-
-@Preview(showBackground=true)
-@Composable
-fun TitlePreview(){
-    Title(title = "Cadastro de Produto")
-}
-
-
-
-
-@Composable
-fun FormFieldCorreto() {
-
+    ProductRegisterForm(navController = rememberNavController())
 }

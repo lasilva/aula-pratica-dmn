@@ -72,47 +72,6 @@ fun NavScreen() {
 
 }
 
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Composable
-fun SaudacaoUsuario(name: String) {
-    Column(
-        modifier = Modifier
-    ) {
-        Text(
-            text = "Olá, $name",
-            color = Color.Black,
-            fontWeight = FontWeight.Medium,
-            fontSize = 32.sp,
-            fontFamily = poppins
-        )
-        Text(
-            text =  "O que você quer pedir hoje?",
-            color = Color.Black,
-            fontWeight = FontWeight.Normal,
-            fontSize = 12.sp,
-            fontFamily = poppins
-        )
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun SaudacaoUsuarioPreview() {
-    TiaLuDeliveryTheme {
-
-    }
-}
-
-
 @Composable
 fun MyPlate(
     drawableId: Int,
@@ -219,18 +178,6 @@ fun PlateItem(itemName: String = "None",
         drawableId = R.drawable.plate1, size = 152)
 }
 
-@Preview(showBackground = true)
-@Composable
-fun SpecialPlate() {
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TiaLuDeliveryTheme {
-        Greeting("Android")
-    }
-}
 
 @Composable
 fun RetanguloComCantosExtremos() {
