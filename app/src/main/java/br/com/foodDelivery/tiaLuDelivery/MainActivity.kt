@@ -44,6 +44,7 @@ import coil.compose.AsyncImage
 import java.math.BigDecimal
 import java.math.RoundingMode
 import br.com.foodDelivery.tiaLuDelivery.ui.theme.poppins
+import br.com.foodDelivery.tiaLuDelivery.viewModel.RegisterProduct
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +52,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TiaLuDeliveryTheme {
-                NavScreen()
+                ProductRegisterForm(navController = rememberNavController())
             }
         }
     }

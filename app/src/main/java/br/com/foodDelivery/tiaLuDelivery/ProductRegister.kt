@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -12,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.com.foodDelivery.tiaLuDelivery.ui.basicComposables.AmountOption
@@ -19,21 +21,16 @@ import br.com.foodDelivery.tiaLuDelivery.ui.basicComposables.FormField
 import br.com.foodDelivery.tiaLuDelivery.ui.basicComposables.MainButton
 import br.com.foodDelivery.tiaLuDelivery.ui.basicComposables.Title
 import br.com.foodDelivery.tiaLuDelivery.ui.basicComposables.UploadButton
+import br.com.foodDelivery.tiaLuDelivery.viewModel.ProdutoViewModel
 import java.math.BigDecimal
 
-
+// UI - Apenas minha View
 @Composable
 fun ProductRegisterForm(modifier: Modifier = Modifier,
+                        viewModel: ProdutoViewModel = viewModel(),
                         navController: NavController){
 
-    var nome by remember {mutableStateOf("")}
-    var preco by remember { mutableStateOf("") }
-    var descricao by remember { mutableStateOf("") }
-    var codigoPDV by remember { mutableStateOf("") }
-    var quantidade by remember { mutableStateOf(0) }
-
-    var isErrorNome by remember { mutableStateOf(false) }
-    var isErrorPreco by remember { mutableStateOf(false) }
+    val produtoUiState by viewModel.produtoUiState.collectAsState()
 
     Column(
         modifier = modifier.padding(start = 30.dp,
@@ -50,10 +47,9 @@ fun ProductRegisterForm(modifier: Modifier = Modifier,
             height = 50.dp,
             modifier = modifier.padding(top = 20.dp),
             leftPadding = 0.dp,
-            value = nome,
-            isError = isErrorNome) {
-            novoNome -> nome = novoNome
-            isErrorNome = nome.length < 3
+            value = produtoUiState.nome,
+            isError = produtoUiState.isErrorName) {
+            novoNome -> viewModel.atualizarNome(novoNome)
         }
         Row(modifier = modifier.padding(top = 20.dp)) {
             Column (modifier = modifier){
@@ -63,23 +59,14 @@ fun ProductRegisterForm(modifier: Modifier = Modifier,
                     height = 50.dp,
                     leftPadding = 0.dp,
                     modifier = modifier.padding(bottom = 20.dp),
-                    value = preco,
-                    isError = isErrorPreco,
+                    value = produtoUiState.precoUnitario,
+                    isError = produtoUiState.isErrorPreco,
                     keyboard = KeyboardType.Decimal,
-                    onValueChanged = { novoPreco ->
-                        preco = novoPreco
-                        val precoUnitario: BigDecimal = if (preco.isNotBlank()) BigDecimal(preco).setScale(2) else BigDecimal.ZERO
-                        isErrorPreco = precoUnitario.compareTo(BigDecimal.ZERO) <= 0
-                    }
+                    onValueChanged = { novoPreco -> viewModel.atualizarPreco(novoPreco) }
                 )
-
-                AmountOption(amount = quantidade, updateAmount = {
-                        novaQuantidade -> quantidade = novaQuantidade
+                AmountOption(amount = produtoUiState.quantidade, updateAmount = {
+                        novaQuantidade -> viewModel.atualizarQuantiade(novaQuantidade)
                 })
-
-                AmountOption(amount = quantidade) {
-                    novaQuantidade -> quantidade = novaQuantidade
-                }
             }
             UploadButton()
         }
@@ -90,8 +77,8 @@ fun ProductRegisterForm(modifier: Modifier = Modifier,
             height = 150.dp,
             leftPadding = 0.dp,
             modifier = modifier.padding(top = 20.dp),
-            value = descricao,
-            onValueChanged = { novaDescricao -> descricao = novaDescricao }
+            value = produtoUiState.descricao,
+            onValueChanged = { novaDescricao -> viewModel.atualizarDescricao(novaDescricao) }
         )
         FormField(
             label = "Código PDV",
@@ -100,8 +87,8 @@ fun ProductRegisterForm(modifier: Modifier = Modifier,
             modifier = modifier.padding(top = 20.dp,
                 bottom = 20.dp),
             leftPadding = 0.dp,
-            value = codigoPDV,
-            onValueChanged = { novoCodigo -> codigoPDV = novoCodigo }
+            value = produtoUiState.codigoPDV,
+            onValueChanged = { novoCodigo -> viewModel.atualizarCodigoPDV(novoCodigo) }
         )
 
         MainButton(
